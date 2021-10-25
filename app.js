@@ -3,12 +3,17 @@ const chalk = require('chalk');
 const debug = require('debug')('app');
 const morgan = require('morgan');
 const path = require('path');
+const sessionRouter = require('./src/routers/sessionsRouter.js');
+
 
 const PORT = process.env.PORT
 const app = express();
 
+
 app.use(morgan('tiny'));
 app.use(express.static(path.join(__dirname,'/public/')));
+
+app.use('/sessions',sessionRouter)
 
 app.set('views','./src/views');
 app.set('view engine','ejs');
