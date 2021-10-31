@@ -2,6 +2,7 @@ const express = require('express');
 const sessionData = require('../data/sessions.json'); 
 const debug = require('debug')('app:sessionRouter');
 const {MongoClient, ObjectId} = require('mongodb');
+const speakerServices = require('../services/speakerServices.js');
 
 const sessionRouter = express.Router();
 
@@ -45,11 +46,15 @@ sessionRouter.route('/:id')
             let client;
             try{
                 client = await MongoClient.connect(url);
-                debug('Connected to the Mongo DB');
+                debug('Connected to the Mongo DB'+ id);
 
                 const db = client.db(dbName);
 
-                const dbResponseForSession = await db.collection('session').findOne({_id: new ObjectId(id)})
+                const dbResponseForSession = await db.collection('session').findOne({_id: new ObjectId(id)});
+
+                const apiResponse = await speakerServices.getSpeakerById(dbResponseForSession.speakers[0].id);
+
+                dbResponseForSession.speaker = apiResponse.data;
 
                 res.render('sessionDetails',{session:dbResponseForSession});
 
