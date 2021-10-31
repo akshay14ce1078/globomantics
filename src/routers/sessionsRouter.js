@@ -5,6 +5,14 @@ const {MongoClient, ObjectId} = require('mongodb');
 
 const sessionRouter = express.Router();
 
+sessionRouter.use((req,res, next)=>{
+    if(req.user){
+        next();
+    }else {
+        res.redirect('/auth/signIn');
+    }
+})
+
 sessionRouter.route('/')
     .get((req,res) => {
         const url = 'mongodb+srv://dbUser:9LPnBOLMO9J7Gr0t@globomantics.qtrvi.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
